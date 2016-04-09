@@ -1,0 +1,337 @@
+;//------------------------------------------------------------------------------
+;// Copyright:      Pascal Stang ( 30.09.2002 )
+;// Author:         Pascal Stang - Copyright (C) 2002
+;// Remarks:        Modified by Sh. Nourbakhsh Rad  at date: 20.10.2008
+;// known Problems: none
+;// Version:        2.5.0
+;// Description:    Analog-to-Digital converter functions for Atmel AVR series
+;//------------------------------------------------------------------------------
+;
+;#include "ADC.h"
+;PCODE: $00000000 VOL: 0
+	#ifndef __SLEEP_DEFINED__
+;PCODE: $00000001 VOL: 0
+	#define __SLEEP_DEFINED__
+;PCODE: $00000002 VOL: 0
+	.EQU __se_bit=0x20
+;PCODE: $00000003 VOL: 0
+	.EQU __sm_mask=0x1C
+;PCODE: $00000004 VOL: 0
+	.EQU __sm_powerdown=0x10
+;PCODE: $00000005 VOL: 0
+	.EQU __sm_powersave=0x18
+;PCODE: $00000006 VOL: 0
+	.EQU __sm_standby=0x14
+;PCODE: $00000007 VOL: 0
+	.EQU __sm_ext_standby=0x1C
+;PCODE: $00000008 VOL: 0
+	.EQU __sm_adc_noise_red=0x08
+;PCODE: $00000009 VOL: 0
+	.SET power_ctrl_reg=mcucr
+;PCODE: $0000000A VOL: 0
+	#endif
+;PCODE: $0000000B VOL: 0
+;PCODE: $0000000C VOL: 0
+;
+;
+;//! Software flag used to indicate when
+;/// the a2d conversion is complete.
+;#if (FastRead ==0) || (FastRead ==1)
+;	volatile unsigned char 							a2dCompleteFlag;
+;#endif
+;
+;// functions
+;
+;// initialize a2d converter
+;void a2dInit(void)
+; 0003 0017 {
+
+	.CSEG
+;PCODE: $0000000D VOL: 0
+;PCODE: $0000000E VOL: 0
+; 0003 0018 	a2dTurnOn();																								// enable ADC (turn on ADC power)
+;PCODE: $0000000F VOL: 0
+; 0003 0019 
+; 0003 001A 	a2dSingleSample();																					// default to single sample convert mode
+;PCODE: $00000010 VOL: 0
+; 0003 001B 	a2dSetPrescaler(ADC_PRESCALE);															// set default prescaler
+;PCODE: $00000011 VOL: 0
+;PCODE: $00000012 VOL: 0
+; 0003 001C 	a2dSetReference(ADC_REFERENCE);															// set default reference
+;PCODE: $00000013 VOL: 0
+;PCODE: $00000014 VOL: 0
+; 0003 001D 	a2dSet10bit();																							// set to right-adjusted result
+;PCODE: $00000015 VOL: 0
+; 0003 001E 
+; 0003 001F 	#if (FastRead ==0) || (FastRead ==1)
+; 0003 0020 		a2dCompleteFlag = False;																	// clear conversion complete flag
+;PCODE: $00000016 VOL: 0
+;PCODE: $00000017 VOL: 1
+; 0003 0021 
+; 0003 0022 		sbi(ADCSR, ADIE);																					// enable ADC interrupts
+;PCODE: $00000018 VOL: 0
+;PCODE: $00000019 VOL: 0
+; 0003 0023 
+; 0003 0024 		sei();																										// turn on interrupts (if not already on)
+;PCODE: $0000001A VOL: 0
+	sei
+;PCODE: $0000001B VOL: 0
+; 0003 0025 	#endif
+; 0003 0026 }
+;PCODE: $0000001C VOL: 0
+;PCODE: $0000001D VOL: 0
+;
+;// configure A2D converter to Single Sample mode
+;void a2dSingleSample(void)
+; 0003 002A {
+;PCODE: $0000001E VOL: 0
+;PCODE: $0000001F VOL: 0
+; 0003 002B 	cbi(ADCSR, ADFR);
+;PCODE: $00000020 VOL: 0
+;PCODE: $00000021 VOL: 0
+; 0003 002C }
+;PCODE: $00000022 VOL: 0
+;PCODE: $00000023 VOL: 0
+;
+;// configure A2D converter to Auto Trigger mode
+;void a2dAutoTrigger(void)
+; 0003 0030 {
+;PCODE: $00000024 VOL: 0
+;PCODE: $00000025 VOL: 0
+; 0003 0031 	sbi(ADCSR, ADFR);
+;PCODE: $00000026 VOL: 0
+;PCODE: $00000027 VOL: 0
+; 0003 0032 }
+;PCODE: $00000028 VOL: 0
+;PCODE: $00000029 VOL: 0
+;
+;// configure A2D converter right-adjusted result for 10bit conversion result
+;void a2dSet10bit(void)
+; 0003 0036 {
+;PCODE: $0000002A VOL: 0
+;PCODE: $0000002B VOL: 0
+; 0003 0037 	cbi(ADMUX, ADLAR);																					// set to right-adjusted result
+;PCODE: $0000002C VOL: 0
+;PCODE: $0000002D VOL: 0
+; 0003 0038 }
+;PCODE: $0000002E VOL: 0
+;PCODE: $0000002F VOL: 0
+;
+;// configure A2D converter right-adjusted result for 8bit conversion result
+;void a2dSet8bit(void)
+; 0003 003C {
+;PCODE: $00000030 VOL: 0
+;PCODE: $00000031 VOL: 0
+; 0003 003D 	sbi(ADMUX, ADLAR);																					// clear right-adjusted result
+;PCODE: $00000032 VOL: 0
+;PCODE: $00000033 VOL: 0
+; 0003 003E }
+;PCODE: $00000034 VOL: 0
+;PCODE: $00000035 VOL: 0
+;
+;// turn on a2d converter
+;void a2dTurnOn(void)
+; 0003 0042 {
+;PCODE: $00000036 VOL: 0
+;PCODE: $00000037 VOL: 0
+; 0003 0043 	sbi(ADCSR, ADEN);																						// enable ADC (turn on ADC power)
+;PCODE: $00000038 VOL: 0
+;PCODE: $00000039 VOL: 0
+; 0003 0044 }
+;PCODE: $0000003A VOL: 0
+;PCODE: $0000003B VOL: 0
+;
+;// turn off a2d converter
+;void a2dTurnOff(void)
+; 0003 0048 {
+;PCODE: $0000003C VOL: 0
+;PCODE: $0000003D VOL: 0
+; 0003 0049 	#if (FastRead ==0) || (FastRead ==1)
+; 0003 004A 		cbi(ADCSR, ADIE);																					// disable ADC interrupts
+;PCODE: $0000003E VOL: 0
+;PCODE: $0000003F VOL: 0
+; 0003 004B 	#endif
+; 0003 004C 
+; 0003 004D 	cbi(ADCSR, ADEN);																						// disable ADC (turn off ADC power)
+;PCODE: $00000040 VOL: 0
+;PCODE: $00000041 VOL: 0
+; 0003 004E }
+;PCODE: $00000042 VOL: 0
+;PCODE: $00000043 VOL: 0
+;
+;// configure A2D converter clock division (prescaling)
+;void a2dSetPrescaler(unsigned char prescale)
+; 0003 0052 {
+;PCODE: $00000044 VOL: 0
+;PCODE: $00000045 VOL: 0
+; 0003 0053 	outb(ADCSR, ((inb(ADCSR) & ~ADC_PRESCALE_MASK) | prescale));
+;PCODE: $00000046 VOL: 0
+;	prescale -> Y+0
+;PCODE: $00000047 VOL: 0
+;PCODE: $00000048 VOL: 0
+;PCODE: $00000049 VOL: 0
+;PCODE: $0000004A VOL: 0
+;PCODE: $0000004B VOL: 0
+; 0003 0054 }
+;PCODE: $0000004C VOL: 0
+;PCODE: $0000004D VOL: 0
+;PCODE: $0000004E VOL: 0
+;
+;// configure A2D converter voltage reference
+;void a2dSetReference(unsigned char ref)
+; 0003 0058 {
+;PCODE: $0000004F VOL: 0
+;PCODE: $00000050 VOL: 0
+; 0003 0059 	outb(ADMUX, ((inb(ADMUX) & ~ADC_REFERENCE_MASK) | (ref<<6)));
+;PCODE: $00000051 VOL: 0
+;	ref -> Y+0
+;PCODE: $00000052 VOL: 0
+;PCODE: $00000053 VOL: 0
+;PCODE: $00000054 VOL: 0
+;PCODE: $00000055 VOL: 0
+;PCODE: $00000056 VOL: 0
+;PCODE: $00000057 VOL: 0
+;PCODE: $00000058 VOL: 0
+; 0003 005A }
+;PCODE: $00000059 VOL: 0
+;PCODE: $0000005A VOL: 0
+;PCODE: $0000005B VOL: 0
+;
+;// sets the a2d input channel
+;void a2dSetChannel(unsigned char ch)
+; 0003 005E {
+;PCODE: $0000005C VOL: 0
+;PCODE: $0000005D VOL: 0
+; 0003 005F 	outb(ADMUX, (inb(ADMUX) & ~ADC_MUX_MASK) | (ch & ADC_MUX_MASK));			// set channel
+;PCODE: $0000005E VOL: 0
+;	ch -> Y+0
+;PCODE: $0000005F VOL: 0
+;PCODE: $00000060 VOL: 0
+;PCODE: $00000061 VOL: 0
+;PCODE: $00000062 VOL: 0
+;PCODE: $00000063 VOL: 0
+;PCODE: $00000064 VOL: 0
+;PCODE: $00000065 VOL: 0
+; 0003 0060 }
+;PCODE: $00000066 VOL: 0
+;PCODE: $00000067 VOL: 0
+;PCODE: $00000068 VOL: 0
+;
+;// start a conversion on the current a2d input channel
+;void a2dStartConvert(void)
+; 0003 0064 {
+;PCODE: $00000069 VOL: 0
+;PCODE: $0000006A VOL: 0
+; 0003 0065 	#if (FastRead ==0) || (FastRead ==1)
+; 0003 0066 		sbi(ADCSR, ADIF);																					// clear hardware "conversion complete" flag
+;PCODE: $0000006B VOL: 0
+;PCODE: $0000006C VOL: 0
+; 0003 0067 	#endif
+; 0003 0068 
+; 0003 0069 	sbi(ADCSR, ADSC);																						// start conversion
+;PCODE: $0000006D VOL: 0
+;PCODE: $0000006E VOL: 0
+; 0003 006A }
+;PCODE: $0000006F VOL: 0
+;PCODE: $00000070 VOL: 0
+;
+;// return True if conversion is complete
+;unsigned char a2dIsComplete(void)
+; 0003 006E {
+;PCODE: $00000071 VOL: 0
+;PCODE: $00000072 VOL: 0
+; 0003 006F 	return bit_is_set(ADCSR, ADSC);
+;PCODE: $00000073 VOL: 0
+;PCODE: $00000074 VOL: 0
+;PCODE: $00000075 VOL: 0
+; 0003 0070 }
+;PCODE: $00000076 VOL: 0
+;
+;// Perform a 10-bit conversion
+;// starts conversion, waits until conversion is done, and returns result
+;unsigned short a2dConvert10bit(unsigned char ch)
+; 0003 0075 {
+;PCODE: $00000077 VOL: 0
+;PCODE: $00000078 VOL: 0
+; 0003 0076 	#if (FastRead ==0)
+; 0003 0077 		a2dCompleteFlag = False;																						// clear conversion complete flag
+;PCODE: $00000079 VOL: 0
+;	ch -> Y+0
+;PCODE: $0000007A VOL: 0
+;PCODE: $0000007B VOL: 1
+; 0003 0078 		outb(ADMUX, (inb(ADMUX) & ~ADC_MUX_MASK) | (ch & ADC_MUX_MASK));		// set channel
+;PCODE: $0000007C VOL: 0
+;PCODE: $0000007D VOL: 0
+;PCODE: $0000007E VOL: 0
+;PCODE: $0000007F VOL: 0
+;PCODE: $00000080 VOL: 0
+;PCODE: $00000081 VOL: 0
+;PCODE: $00000082 VOL: 0
+; 0003 0079 
+; 0003 007A 		sbi(ADCSR, ADIF);																										// clear hardware "conversion complete" flag
+;PCODE: $00000083 VOL: 0
+;PCODE: $00000084 VOL: 0
+; 0003 007B 		sbi(ADCSR, ADSC);																										// start conversion
+;PCODE: $00000085 VOL: 0
+;PCODE: $00000086 VOL: 0
+; 0003 007C 		while(!a2dCompleteFlag);																						// wait until conversion complete
+;PCODE: $00000087 VOL: 0
+;PCODE: $00000088 VOL: 1
+;PCODE: $00000089 VOL: 0
+;PCODE: $0000008A VOL: 0
+;PCODE: $0000008B VOL: 0
+;PCODE: $0000008C VOL: 0
+; 0003 007D 
+; 0003 007E 	#elif (FastRead ==1)
+; 0003 007F 		sbi(ADCSR, ADIF);																										// clear hardware "conversion complete" flag
+; 0003 0080 		sbi(ADCSR, ADSC);																										// start conversion
+; 0003 0081 		while(bit_is_set(ADCSR, ADSC));																			// wait until conversion complete
+; 0003 0082 
+; 0003 0083 	#endif
+; 0003 0084 
+; 0003 0085 	return (ADCW);																												// read ADC (full 10 bits);
+;PCODE: $0000008D VOL: 0
+;PCODE: $0000008E VOL: 0
+;PCODE: $0000008F VOL: 0
+; 0003 0086 }
+;PCODE: $00000090 VOL: 0
+;
+;// Perform a 8-bit conversion.
+;// starts conversion, waits until conversion is done, and returns result
+;unsigned char a2dConvert8bit(unsigned char ch)
+; 0003 008B {
+;PCODE: $00000091 VOL: 0
+;PCODE: $00000092 VOL: 0
+; 0003 008C 	#if (FastRead ==0) || (FastRead ==1)
+; 0003 008D 		// do 10-bit conversion and return highest 8 bits
+; 0003 008E 		return (a2dConvert10bit(ch)>>2);																		// return ADC MSB byte
+;PCODE: $00000093 VOL: 0
+;	ch -> Y+0
+;PCODE: $00000094 VOL: 0
+;PCODE: $00000095 VOL: 0
+;PCODE: $00000096 VOL: 0
+;PCODE: $00000097 VOL: 0
+;PCODE: $00000098 VOL: 0
+; 0003 008F 
+; 0003 0090 	#else
+; 0003 0091 		return (ADCH);																											// read ADC (8 bits);
+; 0003 0092 
+; 0003 0093 	#endif
+; 0003 0094 }
+;PCODE: $00000099 VOL: 0
+;
+;//! Interrupt handler for ADC complete interrupt.
+;ISR_ADC_COMPLETE()
+; 0003 0098 {
+;PCODE: $0000009A VOL: 0
+;PCODE: $0000009B VOL: 0
+; 0003 0099 	#if (FastRead ==0) || (FastRead ==1)
+; 0003 009A 		// set the a2d conversion flag to indicate "complete"
+; 0003 009B 		a2dCompleteFlag = True;
+;PCODE: $0000009C VOL: 0
+;PCODE: $0000009D VOL: 1
+; 0003 009C 	#endif
+; 0003 009D }
+;PCODE: $0000009E VOL: 0
+;PCODE: $0000009F VOL: 0
+;PCODE: $000000A0 VOL: 0

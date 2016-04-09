@@ -1,0 +1,572 @@
+;//-----------------------------------------------------------------------------
+;// Copyright:      RAD Electronic Co. LTD,
+;// Author:         Sh. Nourbakhsh Rad
+;// Remarks:
+;// known Problems: none
+;// Version:        3.5.1
+;// Description:    NOKIA 1100 Display (PCF8814) driver
+;//-----------------------------------------------------------------------------
+;
+;#include "N1100.h"
+;PCODE: $00000000 VOL: 0
+	#ifndef __SLEEP_DEFINED__
+;PCODE: $00000001 VOL: 0
+	#define __SLEEP_DEFINED__
+;PCODE: $00000002 VOL: 0
+	.EQU __se_bit=0x20
+;PCODE: $00000003 VOL: 0
+	.EQU __sm_mask=0x1C
+;PCODE: $00000004 VOL: 0
+	.EQU __sm_powerdown=0x10
+;PCODE: $00000005 VOL: 0
+	.EQU __sm_powersave=0x18
+;PCODE: $00000006 VOL: 0
+	.EQU __sm_standby=0x14
+;PCODE: $00000007 VOL: 0
+	.EQU __sm_ext_standby=0x1C
+;PCODE: $00000008 VOL: 0
+	.EQU __sm_adc_noise_red=0x08
+;PCODE: $00000009 VOL: 0
+	.SET power_ctrl_reg=mcucr
+;PCODE: $0000000A VOL: 0
+	#endif
+;PCODE: $0000000B VOL: 0
+;PCODE: $0000000C VOL: 0
+;
+;
+;//******************* Constants
+;#if LCDlight == 0
+;	unsigned char 						N11_Cache[N11_Xr][N11_Rr];
+;#endif
+;
+;
+;//*************************************************
+;//******************* Functions *******************
+;//*************************************************
+;void N11_Write(N11_RS DC, unsigned char c)		//write command or data to LCD
+; 0001 0017 {
+
+	.CSEG
+;PCODE: $0000000D VOL: 0
+;PCODE: $0000000E VOL: 0
+; 0001 0018 	int i;
+; 0001 0019 
+; 0001 001A 	N11_CS(LOW);
+;PCODE: $0000000F VOL: 0
+;PCODE: $00000010 VOL: 0
+;PCODE: $00000011 VOL: 0
+;	DC -> Y+3
+;	c -> Y+2
+;	i -> R16,R17
+;PCODE: $00000012 VOL: 0
+;PCODE: $00000013 VOL: 0
+; 0001 001B 
+; 0001 001C 	N11_SCL(LOW);
+;PCODE: $00000014 VOL: 0
+;PCODE: $00000015 VOL: 0
+; 0001 001D 		N11_SDA(DC);
+;PCODE: $00000016 VOL: 0
+;PCODE: $00000017 VOL: 0
+;PCODE: $00000018 VOL: 0
+;PCODE: $00000019 VOL: 0
+;PCODE: $0000001A VOL: 0
+;PCODE: $0000001B VOL: 0
+;PCODE: $0000001C VOL: 0
+;PCODE: $0000001D VOL: 0
+;PCODE: $0000001E VOL: 0
+;PCODE: $0000001F VOL: 0
+;PCODE: $00000020 VOL: 0
+;PCODE: $00000021 VOL: 0
+;PCODE: $00000022 VOL: 0
+; 0001 001E 	N11_SCL(HIGH);
+;PCODE: $00000023 VOL: 0
+;PCODE: $00000024 VOL: 0
+; 0001 001F 
+; 0001 0020 	for(i=7; i>=0; i--)
+;PCODE: $00000025 VOL: 0
+;PCODE: $00000026 VOL: 0
+;PCODE: $00000027 VOL: 0
+;PCODE: $00000028 VOL: 0
+;PCODE: $00000029 VOL: 0
+;PCODE: $0000002A VOL: 0
+;PCODE: $0000002B VOL: 0
+;PCODE: $0000002C VOL: 0
+; 0001 0021 	{
+; 0001 0022 		N11_SCL(LOW);
+;PCODE: $0000002D VOL: 0
+;PCODE: $0000002E VOL: 0
+; 0001 0023 			N11_SDA(bit_is_set(c, i));
+;PCODE: $0000002F VOL: 0
+;PCODE: $00000030 VOL: 0
+;PCODE: $00000031 VOL: 0
+;PCODE: $00000032 VOL: 0
+;PCODE: $00000033 VOL: 0
+;PCODE: $00000034 VOL: 0
+;PCODE: $00000035 VOL: 0
+;PCODE: $00000036 VOL: 0
+;PCODE: $00000037 VOL: 0
+;PCODE: $00000038 VOL: 0
+;PCODE: $00000039 VOL: 0
+;PCODE: $0000003A VOL: 0
+;PCODE: $0000003B VOL: 0
+;PCODE: $0000003C VOL: 0
+;PCODE: $0000003D VOL: 0
+;PCODE: $0000003E VOL: 0
+;PCODE: $0000003F VOL: 0
+;PCODE: $00000040 VOL: 0
+; 0001 0024 		N11_SCL(HIGH);
+;PCODE: $00000041 VOL: 0
+;PCODE: $00000042 VOL: 0
+; 0001 0025 	}
+;PCODE: $00000043 VOL: 0
+;PCODE: $00000044 VOL: 0
+;PCODE: $00000045 VOL: 0
+;PCODE: $00000046 VOL: 0
+;PCODE: $00000047 VOL: 0
+; 0001 0026 
+; 0001 0027 	N11_CS(HIGH);
+;PCODE: $00000048 VOL: 0
+;PCODE: $00000049 VOL: 0
+; 0001 0028 }	//*N11_Write
+;PCODE: $0000004A VOL: 0
+;PCODE: $0000004B VOL: 0
+;PCODE: $0000004C VOL: 0
+;PCODE: $0000004D VOL: 0
+;PCODE: $0000004E VOL: 0
+;PCODE: $0000004F VOL: 0
+;PCODE: $00000050 VOL: 0
+;
+;void N11_GotoXR(unsigned char x, unsigned char r)		//goto X(0..95) and R(0..8)
+; 0001 002B {
+;PCODE: $00000051 VOL: 0
+;PCODE: $00000052 VOL: 0
+; 0001 002C 	N11_Write(cmd, (0xB0| (r&0x0F)));        		//Y axis initialisation: 0100 rrrr
+;PCODE: $00000053 VOL: 0
+;	x -> Y+1
+;	r -> Y+0
+;PCODE: $00000054 VOL: 0
+;PCODE: $00000055 VOL: 0
+;PCODE: $00000056 VOL: 0
+;PCODE: $00000057 VOL: 0
+;PCODE: $00000058 VOL: 0
+;PCODE: $00000059 VOL: 0
+;PCODE: $0000005A VOL: 0
+; 0001 002D 	N11_Write(cmd, (0x00| (x&0x0F)));        		//X axis initialisation: 0000 xxxx  (x3 x2 x1 x0)
+;PCODE: $0000005B VOL: 0
+;PCODE: $0000005C VOL: 0
+;PCODE: $0000005D VOL: 0
+;PCODE: $0000005E VOL: 0
+;PCODE: $0000005F VOL: 0
+;PCODE: $00000060 VOL: 0
+;PCODE: $00000061 VOL: 0
+; 0001 002E 	N11_Write(cmd, (0x10|((x>>4)&0x07)));     	//X axis initialisation: 0010 0xxx  (x6 x5 x4)
+;PCODE: $00000062 VOL: 0
+;PCODE: $00000063 VOL: 0
+;PCODE: $00000064 VOL: 0
+;PCODE: $00000065 VOL: 0
+;PCODE: $00000066 VOL: 0
+;PCODE: $00000067 VOL: 0
+;PCODE: $00000068 VOL: 0
+;PCODE: $00000069 VOL: 0
+; 0001 002F }	//*N11_GotoXR
+;PCODE: $0000006A VOL: 0
+;PCODE: $0000006B VOL: 0
+;PCODE: $0000006C VOL: 0
+;
+;//------------------------
+;void N11_Init(void)														//initial LCD
+; 0001 0033 {
+;PCODE: $0000006D VOL: 0
+;PCODE: $0000006E VOL: 0
+; 0001 0034 	N11_CS_init();
+;PCODE: $0000006F VOL: 0
+;PCODE: $00000070 VOL: 0
+;PCODE: $00000071 VOL: 0
+;PCODE: $00000072 VOL: 0
+; 0001 0035 
+; 0001 0036 	N11_SDA_init();
+;PCODE: $00000073 VOL: 0
+;PCODE: $00000074 VOL: 0
+;PCODE: $00000075 VOL: 0
+;PCODE: $00000076 VOL: 0
+; 0001 0037 	N11_SCL_init();
+;PCODE: $00000077 VOL: 0
+;PCODE: $00000078 VOL: 0
+;PCODE: $00000079 VOL: 0
+;PCODE: $0000007A VOL: 0
+; 0001 0038 
+; 0001 0039 	N11_RST_init();
+;PCODE: $0000007B VOL: 0
+;PCODE: $0000007C VOL: 0
+;PCODE: $0000007D VOL: 0
+;PCODE: $0000007E VOL: 0
+; 0001 003A 	N11_BKL_init();
+; 0001 003B 
+; 0001 003C 	//----------------
+; 0001 003D 	N11_CS(LOW);
+;PCODE: $0000007F VOL: 0
+;PCODE: $00000080 VOL: 0
+; 0001 003E 		_delay_ms(50);							//min. 5ms
+;PCODE: $00000081 VOL: 0
+;PCODE: $00000082 VOL: 0
+;PCODE: $00000083 VOL: 0
+; 0001 003F 
+; 0001 0040 	N11_RST(HIGH);
+;PCODE: $00000084 VOL: 0
+;PCODE: $00000085 VOL: 0
+; 0001 0041 
+; 0001 0042 	N11_Write(cmd, 0x23);     		//write VOP register - contrast MSB value(00100ccc - 	  c7 c6 c5)
+;PCODE: $00000086 VOL: 0
+;PCODE: $00000087 VOL: 0
+;PCODE: $00000088 VOL: 0
+;PCODE: $00000089 VOL: 0
+; 0001 0043 	N11_Write(cmd, 0x90);					//write VOP register - contrast LSB value(1001cccc - c3 c2 c1 c0)
+;PCODE: $0000008A VOL: 0
+;PCODE: $0000008B VOL: 0
+;PCODE: $0000008C VOL: 0
+;PCODE: $0000008D VOL: 0
+; 0001 0044 
+; 0001 0045 	N11_Write(cmd, 0xA4);     		//all on/normal display
+;PCODE: $0000008E VOL: 0
+;PCODE: $0000008F VOL: 0
+;PCODE: $00000090 VOL: 0
+;PCODE: $00000091 VOL: 0
+; 0001 0046 	N11_Write(cmd, 0x2F);     		//Power control set(charge pump on/off)
+;PCODE: $00000092 VOL: 0
+;PCODE: $00000093 VOL: 0
+;PCODE: $00000094 VOL: 0
+;PCODE: $00000095 VOL: 0
+; 0001 0047 	N11_Write(cmd, 0x40);     		//set start row address = 0
+;PCODE: $00000096 VOL: 0
+;PCODE: $00000097 VOL: 0
+;PCODE: $00000098 VOL: 0
+;PCODE: $00000099 VOL: 0
+; 0001 0048 	N11_Write(cmd, 0xB0);     		//set R-address = 0
+;PCODE: $0000009A VOL: 0
+;PCODE: $0000009B VOL: 0
+;PCODE: $0000009C VOL: 0
+;PCODE: $0000009D VOL: 0
+; 0001 0049 	N11_Write(cmd, 0x10);     		//set X-address, upper 3 bits
+;PCODE: $0000009E VOL: 0
+;PCODE: $0000009F VOL: 0
+;PCODE: $000000A0 VOL: 0
+;PCODE: $000000A1 VOL: 0
+; 0001 004A 	N11_Write(cmd, 0x00);      		//set X-address, lower 4 bits
+;PCODE: $000000A2 VOL: 0
+;PCODE: $000000A3 VOL: 0
+;PCODE: $000000A4 VOL: 0
+;PCODE: $000000A5 VOL: 0
+; 0001 004B 	//----
+; 0001 004C 	#if MirrorY ==1
+; 0001 004D 		N11_Write(cmd, 0xC8); 			//mirror Y axis (about X axis)
+;PCODE: $000000A6 VOL: 0
+;PCODE: $000000A7 VOL: 0
+;PCODE: $000000A8 VOL: 0
+;PCODE: $000000A9 VOL: 0
+; 0001 004E 	#endif
+; 0001 004F 
+; 0001 0050 	#if InvertScreen ==1
+; 0001 0051 		N11_Write(cmd, 0xA1);				//invert screen in horizontal axis
+;PCODE: $000000AA VOL: 0
+;PCODE: $000000AB VOL: 0
+;PCODE: $000000AC VOL: 0
+;PCODE: $000000AD VOL: 0
+; 0001 0052 	#endif
+; 0001 0053 	//----
+; 0001 0054 	N11_Write(cmd, 0xAC);     		//set initial row (R0) of the display
+;PCODE: $000000AE VOL: 0
+;PCODE: $000000AF VOL: 0
+;PCODE: $000000B0 VOL: 0
+;PCODE: $000000B1 VOL: 0
+; 0001 0055 	N11_Write(cmd, 0x07);
+;PCODE: $000000B2 VOL: 0
+;PCODE: $000000B3 VOL: 0
+;PCODE: $000000B4 VOL: 0
+;PCODE: $000000B5 VOL: 0
+; 0001 0056 
+; 0001 0057 	N11_Write(cmd, 0xAF);    			//display ON/OFF
+;PCODE: $000000B6 VOL: 0
+;PCODE: $000000B7 VOL: 0
+;PCODE: $000000B8 VOL: 0
+;PCODE: $000000B9 VOL: 0
+; 0001 0058 
+; 0001 0059 	N11_CLS();     	    					//clear LCD
+;PCODE: $000000BA VOL: 0
+; 0001 005A 	N11_Write(cmd,0xA7);     			//invert display
+;PCODE: $000000BB VOL: 0
+;PCODE: $000000BC VOL: 0
+;PCODE: $000000BD VOL: 0
+;PCODE: $000000BE VOL: 0
+; 0001 005B 
+; 0001 005C 		_delay_ms(500);
+;PCODE: $000000BF VOL: 0
+;PCODE: $000000C0 VOL: 0
+; 0001 005D 	N11_Write(cmd,0xA6);     			//normal display (non inverted)
+;PCODE: $000000C1 VOL: 0
+;PCODE: $000000C2 VOL: 0
+;PCODE: $000000C3 VOL: 0
+;PCODE: $000000C4 VOL: 0
+; 0001 005E 		_delay_ms(500);
+;PCODE: $000000C5 VOL: 0
+;PCODE: $000000C6 VOL: 0
+; 0001 005F }	//*N11_Init
+;PCODE: $000000C7 VOL: 0
+;PCODE: $000000C8 VOL: 0
+;
+;void N11_CLS(void)														//clear LCD
+; 0001 0062 {
+;PCODE: $000000C9 VOL: 0
+;PCODE: $000000CA VOL: 0
+; 0001 0063 	unsigned char 			x, r;
+; 0001 0064 
+; 0001 0065 	N11_GotoXR(0, 0);
+;PCODE: $000000CB VOL: 0
+;PCODE: $000000CC VOL: 0
+;	x -> R17
+;	r -> R16
+;PCODE: $000000CD VOL: 0
+;PCODE: $000000CE VOL: 0
+;PCODE: $000000CF VOL: 0
+;PCODE: $000000D0 VOL: 0
+; 0001 0066 	N11_Write(cmd, 0xAE); 					// disable display;
+;PCODE: $000000D1 VOL: 0
+;PCODE: $000000D2 VOL: 0
+;PCODE: $000000D3 VOL: 0
+;PCODE: $000000D4 VOL: 0
+; 0001 0067 
+; 0001 0068 	//fill LCD and the video buffer with zero!
+; 0001 0069 	for(r=0; r<N11_Rr; r++)
+;PCODE: $000000D5 VOL: 0
+;PCODE: $000000D6 VOL: 0
+;PCODE: $000000D7 VOL: 0
+;PCODE: $000000D8 VOL: 0
+;PCODE: $000000D9 VOL: 0
+;PCODE: $000000DA VOL: 0
+;PCODE: $000000DB VOL: 0
+;PCODE: $000000DC VOL: 0
+;PCODE: $000000DD VOL: 0
+; 0001 006A 	{
+; 0001 006B 		for(x=0; x<N11_Xr; x++)
+;PCODE: $000000DE VOL: 0
+;PCODE: $000000DF VOL: 0
+;PCODE: $000000E0 VOL: 0
+;PCODE: $000000E1 VOL: 0
+;PCODE: $000000E2 VOL: 0
+;PCODE: $000000E3 VOL: 0
+;PCODE: $000000E4 VOL: 0
+;PCODE: $000000E5 VOL: 0
+;PCODE: $000000E6 VOL: 0
+; 0001 006C 		{
+; 0001 006D 			#if LCDlight == 0
+; 0001 006E 				N11_Cache[x][r]= 0x00;
+; 0001 006F 			#endif
+; 0001 0070 			N11_Write(data, 0x00);
+;PCODE: $000000E7 VOL: 0
+;PCODE: $000000E8 VOL: 0
+;PCODE: $000000E9 VOL: 0
+;PCODE: $000000EA VOL: 0
+; 0001 0071 		}
+;PCODE: $000000EB VOL: 0
+;PCODE: $000000EC VOL: 0
+;PCODE: $000000ED VOL: 0
+;PCODE: $000000EE VOL: 0
+;PCODE: $000000EF VOL: 0
+; 0001 0072 	}
+;PCODE: $000000F0 VOL: 0
+;PCODE: $000000F1 VOL: 0
+;PCODE: $000000F2 VOL: 0
+;PCODE: $000000F3 VOL: 0
+;PCODE: $000000F4 VOL: 0
+; 0001 0073 
+; 0001 0074 	N11_Write(cmd, 0xAF); 					// enable display;
+;PCODE: $000000F5 VOL: 0
+;PCODE: $000000F6 VOL: 0
+;PCODE: $000000F7 VOL: 0
+;PCODE: $000000F8 VOL: 0
+; 0001 0075 }	//*N11_CLS
+;PCODE: $000000F9 VOL: 0
+;PCODE: $000000FA VOL: 0
+;PCODE: $000000FB VOL: 0
+;
+;void N11_Update(void) 												//write data of cache to display RAM
+; 0001 0078 {
+;PCODE: $000000FC VOL: 0
+;PCODE: $000000FD VOL: 0
+; 0001 0079 	#if LCDlight == 0
+; 0001 007A 		unsigned char 			x, r;
+; 0001 007B 
+; 0001 007C 		N11_GotoXR(0, 0);
+; 0001 007D 		//N11_Write(cmd, 0xAE); 					// disable display;
+; 0001 007E 
+; 0001 007F 		//serialize the video buffer to LCD
+; 0001 0080 		for(r=0; r<N11_Rr; r++)
+; 0001 0081 			for(x=0; x<N11_Xr; x++)
+; 0001 0082 				N11_Write(data, N11_Cache[x][r]);
+; 0001 0083 
+; 0001 0084 		//N11_Write(cmd, 0xAF); 					// enable display;
+; 0001 0085 	#endif//LCDlight
+; 0001 0086 }	//*N11_Update
+;PCODE: $000000FE VOL: 0
+;PCODE: $000000FF VOL: 0
+;
+;//------------------------
+;void N11_Contrast(unsigned char cont)					//set LCD contrast value from 0x00 to 0x7F
+; 0001 008A {
+;PCODE: $00000100 VOL: 0
+;PCODE: $00000101 VOL: 0
+; 0001 008B 	N11_Write(cmd, 0x21);					//LCD extended commands.
+;PCODE: $00000102 VOL: 0
+;	cont -> Y+0
+;PCODE: $00000103 VOL: 0
+;PCODE: $00000104 VOL: 0
+;PCODE: $00000105 VOL: 0
+;PCODE: $00000106 VOL: 0
+; 0001 008C 	N11_Write(cmd, 0x80|cont);		//set LCD Vop (Contrast)
+;PCODE: $00000107 VOL: 0
+;PCODE: $00000108 VOL: 0
+;PCODE: $00000109 VOL: 0
+;PCODE: $0000010A VOL: 0
+;PCODE: $0000010B VOL: 0
+;PCODE: $0000010C VOL: 0
+; 0001 008D 	N11_Write(cmd, 0x20)	;				//LCD standard commands, horizontal addressing mode.
+;PCODE: $0000010D VOL: 0
+;PCODE: $0000010E VOL: 0
+;PCODE: $0000010F VOL: 0
+;PCODE: $00000110 VOL: 0
+; 0001 008E }	//*N11_Contrast
+;PCODE: $00000111 VOL: 0
+;PCODE: $00000112 VOL: 0
+;PCODE: $00000113 VOL: 0
+;
+;void N11_Backlight(unsigned char x)						//LCD backlight ON/OFF
+; 0001 0091 {
+;PCODE: $00000114 VOL: 0
+;PCODE: $00000115 VOL: 0
+; 0001 0092 	#ifdef N11_BKL_BIT
+; 0001 0093 		N11_BKL(x);
+; 0001 0094 	#endif//N11_BKL_BIT
+; 0001 0095 }	//*N11_Backlight
+;PCODE: $00000116 VOL: 0
+;PCODE: $00000117 VOL: 0
+;
+;//------------------------
+;void N11_SetPixel(unsigned char x, unsigned char y, N11_Pmode mode)
+; 0001 0099 {
+;PCODE: $00000118 VOL: 0
+;PCODE: $00000119 VOL: 0
+; 0001 009A 	#if LCDlight == 0
+; 0001 009B 		unsigned char			r, pd;
+; 0001 009C 
+; 0001 009D 	 	if((x > GetMaxX()) || (y > GetMaxY()))			return;				//exit if coordinates are not legal
+; 0001 009E 
+; 0001 009F 		r  = y/8;
+; 0001 00A0 		pd = 1 << (y%8);
+; 0001 00A1 
+; 0001 00A2 		if		 (mode == PIXEL_ON)			N11_Cache[x][r] |=  pd;
+; 0001 00A3 		else if(mode == PIXEL_OFF)		N11_Cache[x][r] &= ~pd;
+; 0001 00A4 		else if(mode == PIXEL_XOR)		N11_Cache[x][r] ^=  pd;
+; 0001 00A5 
+; 0001 00A6 		N11_GotoXR(x, r);
+; 0001 00A7 		N11_Write(data, N11_Cache[x][r]);
+; 0001 00A8 	#endif//LCDlight
+; 0001 00A9 }	//*N11_PutPixel
+;PCODE: $0000011A VOL: 0
+;PCODE: $0000011B VOL: 0
+;PCODE: $0000011C VOL: 0
+;
+;unsigned char N11_ReadPixel(unsigned char x, unsigned char y)
+; 0001 00AC {
+;PCODE: $0000011D VOL: 0
+;PCODE: $0000011E VOL: 0
+; 0001 00AD 	#if LCDlight == 0
+; 0001 00AE 	 	if((x > GetMaxX()) || (y > GetMaxY()))			return(0x00);				//exit if coordinates are not legal
+; 0001 00AF 
+; 0001 00B0 		return(bit_is_set(N11_Cache[x][y/8], (1 << (y%8))) ? 0x01 : 0x00);
+; 0001 00B1 	#endif//LCDlight
+; 0001 00B2 }	//*N11_ReadPixel
+;PCODE: $0000011F VOL: 0
+;PCODE: $00000120 VOL: 0
+;PCODE: $00000121 VOL: 0
+;
+;void N11_FillRect(unsigned char x1, unsigned char y1, unsigned char x2, unsigned char y2, N11_Pmode mode)
+; 0001 00B5 {
+;PCODE: $00000122 VOL: 0
+;PCODE: $00000123 VOL: 0
+; 0001 00B6 	#if LCDlight == 0
+; 0001 00B7 		unsigned char			x, y;
+; 0001 00B8 		unsigned char 		h, w;
+; 0001 00B9 
+; 0001 00BA 	 	w = x2 + 1;
+; 0001 00BB 	 	h = y2 + 1;
+; 0001 00BC 
+; 0001 00BD 	 	N11_Write(cmd, 0xAE); 					// disable display;
+; 0001 00BE 
+; 0001 00BF 		for(y=y1; y<h; y++)
+; 0001 00C0 			for(x=x1; x<w; x++)
+; 0001 00C1 				N11_SetPixel(x, y, mode);
+; 0001 00C2 
+; 0001 00C3 		N11_Write(cmd, 0xAF); 					// enable display;
+; 0001 00C4 	#endif//LCDlight
+; 0001 00C5 }	//*N11_FillRect
+;PCODE: $00000124 VOL: 0
+;PCODE: $00000125 VOL: 0
+;PCODE: $00000126 VOL: 0
+;
+;	//------------------------
+;void N11_DrawBitmap(const unsigned char *bitmap, unsigned char x, unsigned char y, N11_Pmode mode)
+; 0001 00C9 {
+;PCODE: $00000127 VOL: 0
+;PCODE: $00000128 VOL: 0
+; 0001 00CA 	#if LCDlight == 0
+; 0001 00CB 		unsigned char 		header, width, height;
+; 0001 00CC 		unsigned char			xx, yy, rr;
+; 0001 00CD 		unsigned int			xy;
+; 0001 00CE 		unsigned char			pd, pc, ps;
+; 0001 00CF 		unsigned char 		Cdata;
+; 0001 00D0 
+; 0001 00D1 
+; 0001 00D2 		header = pgm_read_byte(&bitmap[0]);  	//header size & width & height
+; 0001 00D3 	  width  = pgm_read_byte(&bitmap[1]);
+; 0001 00D4 	  height = pgm_read_byte(&bitmap[2]);
+; 0001 00D5 
+; 0001 00D6 		ps = _ror(1 << (y%8));
+; 0001 00D7 
+; 0001 00D8 		for(xx=0; xx<width; xx++)
+; 0001 00D9 		{
+; 0001 00DA 			pd = ps;
+; 0001 00DB 	 		Cdata = pgm_read_byte(&bitmap[xx+header]);
+; 0001 00DC 
+; 0001 00DD 			for(yy=0, pc=0; yy<height; yy++,pc++)
+; 0001 00DE 			{
+; 0001 00DF 				if(pc==8)
+; 0001 00E0 				{
+; 0001 00E1 					xy = (unsigned char)(yy/8)*width + xx+header;
+; 0001 00E2 				 	Cdata = pgm_read_byte(&bitmap[xy]);
+; 0001 00E3 
+; 0001 00E4 				 	pc = 0;
+; 0001 00E5 				}//if pc
+; 0001 00E6 
+; 0001 00E7 				rr = (unsigned char)((y+yy)/8);
+; 0001 00E8 				pd = _rol(pd);
+; 0001 00E9 
+; 0001 00EA 
+; 0001 00EB 				//Draw BMP!
+; 0001 00EC 				if(mode == PIXEL_XOR)
+; 0001 00ED 				{
+; 0001 00EE 					if(bit_is_set(Cdata, pc))			N11_Cache[x+xx][rr] &= ~pd;
+; 0001 00EF 					else													N11_Cache[x+xx][rr] |=  pd;
+; 0001 00F0 				}
+; 0001 00F1 				else
+; 0001 00F2 				{
+; 0001 00F3 					if(bit_is_set(Cdata, pc))			N11_Cache[x+xx][rr] |=  pd;
+; 0001 00F4 					else													N11_Cache[x+xx][rr] &= ~pd;
+; 0001 00F5 				}
+; 0001 00F6 			}//for yy
+; 0001 00F7 		}//for xx
+; 0001 00F8 
+; 0001 00F9 		N11_Update();
+; 0001 00FA 	#endif//LCDlight
+; 0001 00FB } //*N11_DrawBitmap
+;PCODE: $00000129 VOL: 0
+;PCODE: $0000012A VOL: 0
+;PCODE: $0000012B VOL: 0

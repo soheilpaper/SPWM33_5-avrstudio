@@ -1,0 +1,99 @@
+# Additional material for this makefile was submitted by:
+#  Sh. Nourbakhsh Rad
+#
+# -----------------   On command line:   -----------------
+#
+# make program = Download the hex file to the device, using avrdude.  Please
+#                customize the avrdude settings below first!
+#
+# make fusewrite = Setup MCU fusebits
+#
+# make fuseread = Read MCU fusebits
+#
+#
+
+## Make file global
+include Global_make
+
+
+#---------------- Programming Options (avrdude) ----------------
+# Programming support using avrdude.
+AVRDUDE = avrdude
+
+# Programming hardware
+# Type: avrdude -c ?
+# to get a full listing.
+#
+#AVRDUDE_PROGRAMMER = stk500v2
+AVRDUDE_PROGRAMMER = USBasp
+
+# com1 = serial port. Use lpt1 to connect to parallel port.
+#AVRDUDE_PORT = com1	  # programmer connected to serial device
+#AVRDUDE_PORT = lpt1		# programmer connected to parallel port
+
+
+AVRDUDE_WRITE_FLASH = -U flash:w:$(TARGET).hex:a
+#AVRDUDE_WRITE_EEPROM = -U eeprom:w:$(TARGET).eep:a
+
+
+# Uncomment the following if you want avrdude's erase cycle counter.
+# Note that this counter needs to be initialized first using -Yn,
+# see avrdude manual.
+#AVRDUDE_ERASE_COUNTER = -y
+
+# Uncomment the following if you do /not/ wish a verification to be
+# performed after programming the device.
+#AVRDUDE_NO_VERIFY = -V
+
+# Increase verbosity level.  Please use this when submitting bug
+# reports about avrdude. See <http://savannah.nongnu.org/projects/avrdude> 
+# to submit bug reports.
+#AVRDUDE_VERBOSE = -v -v
+
+
+#AVRDUDE_FLAGS = -p $(MCU) -P $(AVRDUDE_PORT) -c $(AVRDUDE_PROGRAMMER)
+AVRDUDE_FLAGS = -p $(MCU) -c $(AVRDUDE_PROGRAMMER)
+
+AVRDUDE_FLAGS += -F -D $(AVRDUDE_NO_VERIFY)
+AVRDUDE_FLAGS += $(AVRDUDE_VERBOSE)
+AVRDUDE_FLAGS += $(AVRDUDE_ERASE_COUNTER)
+
+
+# ------------------  Write Fuses  ------------------
+#AVRDUDE_W_FUSE = -u -U lfuse:w:11100100:m 
+#AVRDUDE_W_FUSE += -U hfuse:w:11011001:m
+
+#AVRDUDE_W_FUSE = -u -U lfuse:w:11110001:m 
+#AVRDUDE_W_FUSE += -U hfuse:w:11011001:m 
+#AVRDUDE_W_FUSE += -U efuse:w:11100001:m 
+#AVRDUDE_W_FUSE += -U lock:w:11111111:m 
+
+#AVRDUDE_W_FUSE += -U calibration:w:0xBEBDB8B8:m 
+#AVRDUDE_W_FUSE += -U signature:w:0x1E9307:m
+
+# ------------------  Read Fuses  ------------------
+AVRDUDE_R_FUSE = -U lfuse:r:FuseL.bin:b
+AVRDUDE_R_FUSE += -U hfuse:r:FuseH.bin:b
+AVRDUDE_R_FUSE += -U efuse:r:FuseE.bin:b
+AVRDUDE_R_FUSE  += -U lock:r:FuseK.bin:b
+
+#AVRDUDE_R_FUSE += -U calibration:r:FuseC.hex:i
+#AVRDUDE_R_FUSE += -U signature:r:FuseS.hex:i
+
+
+# ---------------------------------------------------------------------------
+
+
+# Program the device.  
+program: $(TARGET).hex $(TARGET).eep
+#	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH) $(AVRDUDE_WRITE_EEPROM)
+	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_WRITE_FLASH)
+
+# Write fuse bits
+fusewrite:
+	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_W_FUSE)
+
+# Read fuse bits
+fuseread:
+	$(AVRDUDE) $(AVRDUDE_FLAGS) $(AVRDUDE_R_FUSE)
+	

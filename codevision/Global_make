@@ -1,0 +1,86 @@
+# Additional material for this makefile was submitted by:
+#  Sh. Nourbakhsh Rad
+#
+
+# MCU name
+MCU = atmega64
+
+# Processor frequency.
+#F_CPU = 14745600
+F_CPU = 8000000
+
+# ------------------  Target file and includes  ------------------
+# Target file name (without extension).
+TARGET = main
+
+# Add include files here!
+INCLUDE_FILES  =
+INCLUDE_FILES += N11/N1100.c 
+INCLUDE_FILES += sFONT/sFONT.c
+
+INCLUDE_FILES += ADC/ADC.c
+
+INCLUDE_FILES += SPWM/SPWM.c
+
+
+# Object files directory
+OBJDIR = .
+
+# ------------------  Sources directories  ------------------
+# List Assembler source files here.
+ASRC = 
+
+# List any extra INC directories to look for include files here.
+EXTRAINCDIRS = 
+
+# List any extra LIB directories to look for libraries here.
+EXTRALIBDIRS = 
+
+# List C++ source files here. (C dependencies are automatically generated.)
+CPPSRC = 
+
+
+#---------------- External Memory Options ----------------
+# 64 KB of external RAM, starting after internal RAM (ATmega128!),
+EXTMEMOPTS =
+
+
+# ------------------  WinAVR directory  ------------------
+DIRAVR = d:/WinAVR
+
+# Define directories, if needed.
+DIRAVRBIN = $(DIRAVR)/bin
+DIRAVRUTILS = $(DIRAVR)/utils/bin
+DIRINC = .
+DIRLIB = $(DIRAVR)/avr/lib
+
+
+# ------------------  AVRlib setting  ------------------
+#AVRLIB = C:/AVRlib
+
+#TGR = TARGET
+#INC = EXTRAINCDIRS
+#LIB = EXTRALIBDIRS
+
+#INCLUDE_FILES += $(AVRLIB)/buffer.c $(AVRLIB)/uart.c $(AVRLIB)/rprintf.c $(AVRLIB)/timer.c $(AVRLIB)/a2d.c
+
+#include $(AVRLIB)/make/avrproj_make
+
+#buffer.o				: buffer.c		buffer.h
+#uart.o					: uart.c			uart.h								global.h
+#uart2.o				: uart2.c			uart2.h								global.h
+#rprintf.o			: rprintf.c		rprintf.h
+#a2d.o					: a2d.c				a2d.h
+#timer.o				: timer.c			timer.h								global.h
+#pulse.o				: pulse.c			pulse.h			timer.h		global.h
+#lcd.o					: lcd.c				lcd.h									global.h
+#i2c.o					: i2c.c				i2c.h									global.h
+#spi.o					: spi.c				spi.h									global.h
+#swpwm.o				: swpwm.c			swpwm.h								global.h
+#servo.o				: servo.c			servo.h								global.h
+#swuart.o				: swuart.c		swuart.h							global.h				
+#tsip.o					: tsip.c			tsip.h								global.h				
+#nmea.o					: nmea.c			nmea.h								global.h				
+#vt100.o				: vt100.c			vt100.h								global.h				
+#gps.o					: gps.c				gps.h									global.h				
+#$(TGR).o				: $(TGR).c													global.h				

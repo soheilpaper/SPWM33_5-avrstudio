@@ -1,0 +1,25 @@
+RAM Allocation
+Variable                                                          Address   Size
+--------------------------------------------------------------------------------
+TCounter                                                          0x053B       2
+Ctemp                                                             0x053D      24
+SPchar                                                            0x0555      10
+a2dCompleteFlag                                                   0x055F       1
+FinalSpeed                                                        0x0560       2
+Acceleration                                                      0x0562       1
+Deceleration                                                      0x0563       1
+speed                                                             0x0564       2
+index                                                             0x0566       1
+MSflag                                                            0x0567       1
+ACC_counter                                                       0x0568       1
+DEC_counter                                                       0x0569       1
+_seed                                                             0x056A       4
+
+EEPROM Allocation
+Variable                                                          Address   Size
+--------------------------------------------------------------------------------
+
+Register Allocation
+Variable                                                          Register  Size
+--------------------------------------------------------------------------------
+Itemp                                                             R4,R5        2
